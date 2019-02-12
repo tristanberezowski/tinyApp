@@ -10,9 +10,9 @@
 </head>
 <body style="font-size:20px; padding:50px;">
   <%- include ./partials/_header.ejs %>
-  <h3> URLS </h3>
+  <h3> URL Directory </h3>
 <% for(var link in urls) { %>
-  <li> Short: <a href= <%link%> <%= link %> </a> Long: <a href= urls[link]> <%= urls[link] %> </a></li>
+  <li> Short: <a href= <%=`/urls/${link}`%>> <%= link %> </a> Long: <a href= <%=urls[link]%>> <%= urls[link] %> </a></li>
   
 <% } %>
 </body>
