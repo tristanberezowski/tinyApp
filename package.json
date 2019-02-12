@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/tristanberezowski/tinyApp/issues"
   },
-  "homepage": "https://github.com/tristanberezowski/tinyApp#readme"
+  "homepage": "https://github.com/tristanberezowski/tinyApp#readme",
+  "dependencies": {
+    "express": "^4.16.4"
+  }
 }
