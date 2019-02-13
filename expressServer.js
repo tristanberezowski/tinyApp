@@ -21,7 +21,7 @@ app.post("/urls/", (req, res) => {
   while (urlDatabase[temp]) {
     temp = generateRandomString(6);
   }
-  urlDatabase[temp] = req.body;
+  urlDatabase[temp] = 'http://' + req.body.longURL;
   res.redirect('/urls')
 })
 
