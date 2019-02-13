@@ -10,7 +10,13 @@ const urlDatabase = {
   "9sm5xK": "http://www.google.com"
 };
 
-app.post("/urls/", (req, res) => {
+app.post("/urls/:shortURL/delete", (req, res) => {
+  console.log(`${req.params.shortURL}/${urlDatabase[req.params.shortURL]} is being deleted`);
+  delete urlDatabase[req.params.shortURL];
+  res.redirect('/urls/');
+}); 
+
+app.post("/urls/", (req, res) => {//new
   console.log(req.body);
   if (!req.body.longURL) {
     res.redirect('/urls/');
@@ -23,6 +29,9 @@ app.post("/urls/", (req, res) => {
   }
   urlDatabase[temp] = 'http://' + req.body.longURL;
   res.redirect('/urls')
+});
+app.get('/u/:shortURL', (req, res) => {
+  res.redirect(urlDatabase[req.params.shortURL])
 })
 
 app.get("/", (req, res) => {
@@ -34,9 +43,8 @@ app.get("/urls/new", (req, res) => {
 });
 
 app.get("/urls/:shortURL", (req, res) => {
-  //let templateVars = { shortURL: req.params.shortURL, longURL: urlDatabase[req.params.shortURL] };
-  //res.render("urlsShow", templateVars);
-  res.redirect(urlDatabase[req.params.shortURL])
+  let templateVars = { shortURL: req.params.shortURL, longURL: urlDatabase[req.params.shortURL] };
+    res.render("urlsShow", templateVars);
 });
 
 app.get("/urls", (req, res) => {

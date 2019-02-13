@@ -13,7 +13,9 @@
   <h3> URL Directory </h3>
 <% for(var link in urls) { %>
   <li> Short: <a href= <%=`/urls/${link}`%>> <%= link %> </a> Long: <a href= <%=urls[link]%>> <%= urls[link] %> </a></li>
-  
+  <form method="POST" action= <%=`/urls/${link}/delete`%>>
+    <button type='submit'>Delete</button>
+  </form>
 <% } %>
 </body>
 </html>
