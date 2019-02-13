@@ -11,6 +11,11 @@
 <body style="font-size:20px; padding:50px;">
   <%- include ./partials/_header.ejs %>
   <h3> Your URL Is </h3>
-  <h6> Short: <%=`/u/${shortURL}`%><br> Long: <a href= <%=longURL%>> <%= longURL %> </a></h6>
+  <h6> Short: <%=`/u/${shortURL}`%><br></h6>
+  <form action=<%=`/urls/${shortURL}`%> method='POST'>
+    <p>Change your URL</p>
+    <input type="text" name='newURL' placeholder=<%=longURL%> ></input>
+    <button type='submit'>Submit</button>
+  </form>
 </body>
 </html>

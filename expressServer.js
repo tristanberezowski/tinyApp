@@ -10,6 +10,12 @@ const urlDatabase = {
   "9sm5xK": "http://www.google.com"
 };
 
+app.post("/urls/:shortURL", (req, res) => {
+  console.log(`Changing ${urlDatabase[req.params.shortURL]} to ${req.body.newURL}`)
+  urlDatabase[req.params.shortURL] = req.body.newURL;
+  res.redirect(`/urls/${req.params.shortURL}`)
+});
+
 app.post("/urls/:shortURL/delete", (req, res) => {
   console.log(`${req.params.shortURL}/${urlDatabase[req.params.shortURL]} is being deleted`);
   delete urlDatabase[req.params.shortURL];
@@ -22,7 +28,6 @@ app.post("/urls/", (req, res) => {//new
     res.redirect('/urls/');
     return 0;
   }
-
   let temp = generateRandomString(6);
   while (urlDatabase[temp]) {
     temp = generateRandomString(6);
@@ -30,6 +35,7 @@ app.post("/urls/", (req, res) => {//new
   urlDatabase[temp] = 'http://' + req.body.longURL;
   res.redirect('/urls')
 });
+
 app.get('/u/:shortURL', (req, res) => {
   res.redirect(urlDatabase[req.params.shortURL])
 })
