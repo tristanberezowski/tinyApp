@@ -10,6 +10,21 @@ const urlDatabase = {
   "9sm5xK": "http://www.google.com"
 };
 
+app.post("/urls/", (req, res) => {
+  console.log(req.body);
+  if (!req.body.longURL) {
+    res.redirect('/urls/');
+    return 0;
+  }
+
+  let temp = generateRandomString(6);
+  while (urlDatabase[temp]) {
+    temp = generateRandomString(6);
+  }
+  urlDatabase[temp] = req.body;
+  res.redirect('/urls')
+})
+
 app.get("/", (req, res) => {
   res.send("Hello!");
 });
@@ -19,8 +34,9 @@ app.get("/urls/new", (req, res) => {
 });
 
 app.get("/urls/:shortURL", (req, res) => {
-  let templateVars = { shortURL: req.params.shortURL, longURL: urlDatabase[req.params.shortURL] };
-  res.render("urlsShow", templateVars);
+  //let templateVars = { shortURL: req.params.shortURL, longURL: urlDatabase[req.params.shortURL] };
+  //res.render("urlsShow", templateVars);
+  res.redirect(urlDatabase[req.params.shortURL])
 });
 
 app.get("/urls", (req, res) => {
@@ -40,3 +56,14 @@ app.get("/hello", (req, res) => {
 app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}!`);
 });
+
+
+
+function generateRandomString(len) {
+  function randomString(length, chars) {
+    var result = '';
+    for (var i = length; i > 0; --i) result += chars[Math.floor(Math.random() * chars.length)];
+    return result;
+}
+  return rString = randomString(len, '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ');
+}
