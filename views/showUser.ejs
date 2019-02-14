@@ -10,13 +10,10 @@
 </head>
 <body style="font-size:20px; padding:50px;">
   <%- include ./partials/_header.ejs %>
-  <h3> Register <%= username %> :) </h3>
-  <div>
-  <form id='registerform' style="display:inline-block" method="POST" action='/register'>
-    <input type='text' name='email' placeholder="email"></input>
-    <input type='password' name='password' placeholder="password"></input>
-    <button type='submit'>Submit</button>
-  </form>
-</div>
+  <h3> User Profile For <%= user %> </h3>
+  <h5>Details:</h5>
+  <% for(var details in users[user]) { %>
+  <h6> <%=`${details}: ${users[user][details]}`%></h6>
+  <% } %>
 </body>
 </html>

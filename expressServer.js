@@ -34,7 +34,7 @@ app.post("/logout", (req, res) => {
 app.post("/login", (req, res) => {
   console.log('Username added:',req.body.username);
   res.cookie('username',req.body.username);
-  res.redirect('/urls');
+  res.redirect('/register');
 });
 
 app.post("/urls/:shortURL", (req, res) => {
@@ -50,13 +50,18 @@ app.post("/urls/:shortURL/delete", (req, res) => {
 }); 
 
 app.post('/register', (req, res) => {
-  user[req.body.id] = { 
-    id: req.body.id,
-    email: req.body.email,
-    password: req.body.password
+  if (users[req.cookies["username"]]) {
+    res.redirect('/urls'); //needs to be changed eventually
   }
-  console.log(`New User: ${user[req.body.id].id}`);
-  res.redirect(`/user/${user[req.body.id].id}`);
+  else {
+    users[req.cookies["username"]] = { 
+      id: req.cookies["username"],
+      email: req.body.email,
+      password: req.body.password
+  }
+  console.log(`New User: ${users[req.cookies['username']]}`);
+  res.redirect(`/user/${users[req.cookies["username"]].id}`);
+  }
 })
 
 app.post("/urls/", (req, res) => {//new
@@ -74,7 +79,10 @@ app.post("/urls/", (req, res) => {//new
 });
 
 app.get('/user/:user', (req, res) => {
-  let templateVars
+  let user = req.params.user;
+  let templateVars = {user: user, users: users, username: req.cookies["username"]};
+  console.log(templateVars)
+  res.render('showUser', templateVars);
 });
 
 app.get('/register', (req, res) => {
