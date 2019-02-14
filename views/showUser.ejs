@@ -6,14 +6,14 @@
 
   <!-- Bootstrap CSS -->
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
-  <title>TinyApp</title>
+  <title>TinyApp User Profile</title>
 </head>
 <body style="font-size:20px; padding:50px;">
-  <%- include ./partials/_header.ejs %>
-  <h3> User Profile For <%= user %> </h3>
+  <% include ./partials/_header.ejs %>
+  <h3> User Profile For <%= user.email %> </h3>
   <h5>Details:</h5>
-  <% for(var details in users[user]) { %>
-  <h6> <%=`${details}: ${users[user][details]}`%></h6>
-  <% } %>
+  <% for(var details in profile) { if(details !== 'password') { %>
+  <h6> <%= `${details}: ${profile[details]}` %></h6>
+  <% }} %>
 </body>
 </html>

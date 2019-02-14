@@ -10,10 +10,10 @@
 </head>
 <body style="font-size:20px; padding:50px;">
   <%- include ./partials/_header.ejs %>
-  <h3> Register <%= username %> :) </h3>
+  <h3> Register new user :) </h3>
   <div>
   <form id='registerform' style="display:inline-block" method="POST" action='/register'>
-    <input type='text' name='email' placeholder="email"></input>
+    <input type='email' name='email' placeholder="email"></input>
     <input type='password' name='password' placeholder="password"></input>
     <button type='submit'>Submit</button>
   </form>

@@ -1,14 +1,15 @@
-<h1><a href= '/urls'>TinyApp</a></h1>
-<a href='/urls/new' style='font-size:10px;padding:5px'>Create New TinyURL</a>
-<% if(username){ %>
+<h1><strong><a href= '/urls'>TinyApp</a></strong></h1>
+<a href='/urls/new' style='font-size:15px;padding:5px'>Create New TinyURL</a>
+<% if(user){ %>
     <form action='/logout' method='POST'>
-      <p style= 'display: inline-block'><%= username %></p>
+      <p style= 'display: inline-block'><%= user.email %></p>
       <button type='submit'>Logout</button>
     </form>
   <% } else { %>
-<form action='/login' method='POST'>
-  <input type='text' name='username' placeholder='Enter username'></input>
-  <button type='submit'>Enter</button>
-</form>
+    <div style='font-size:15px;padding:5px'>
+      <a href='/login'>Login</a>
+      <br>
+      <a href='/register'>New to TinyURL?</a>
+    </div>
 <% } %>
 <p>----------------------------------------------</p>

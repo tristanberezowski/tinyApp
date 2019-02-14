@@ -6,15 +6,14 @@
 
   <!-- Bootstrap CSS -->
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
-  <title>TinyApp</title>
+  <title>TinyApp All Users</title>
 </head>
 <body style="font-size:20px; padding:50px;">
   <%- include ./partials/_header.ejs %>
-  <h3> URL Directory </h3>
+  <h3> User Directory </h3>
 <% for(var user in users) { %>
-  <li> User: <%= user.id%> Email: <%= user.email%> User: <%= user.password%>
+  <li> <a href= <%= `/user/${user.id}` %>> User: <%= user.email%></a>
   </li>
-  <a href=<%=`/urls/${link}`%>><button >Edit</button></a>
 <% } %>
 </body>
 </html>
