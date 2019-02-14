@@ -32,6 +32,10 @@ app.post("/logout", (req, res) => {
 });
 
 app.post("/login", (req, res) => {
+  if (users[req.cookies["username"]]) {
+    
+    res.redirect('/urls'); //needs to be changed eventually
+  }
   console.log('Username added:',req.body.username);
   res.cookie('username',req.body.username);
   res.redirect('/register');
@@ -51,6 +55,7 @@ app.post("/urls/:shortURL/delete", (req, res) => {
 
 app.post('/register', (req, res) => {
   if (users[req.cookies["username"]]) {
+    req.flash('msg','some message');
     res.redirect('/urls'); //needs to be changed eventually
   }
   else {
