@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+  <title>TinyApp</title>
+</head>
+<body style="font-size:20px; padding:50px;">
+  <%- include ./partials/_header.ejs %>
+  <h3> User Directory </h3>
+<% for(var user in users) { %>
+  <li> Short: <a href= <%=`/urls/${link}`%>> <%= link %> </a> Long: <a href= <%=urls[link]%>> <%= urls[link] %> </a></li>
+  <div>
+  <form style="display:inline-block" method="POST" action='/register'></form>
+    <input type='text' name='name' placeholder="name"></input>
+    <input type='text' name='email' placeholder="email"></input>
+    <input type='password' name='password' placeholder="password"></input>
+    <button type='submit'>Submit</button>
+  </form>
+  <a href=<%=`/urls/${link}`%>><button >Edit</button></a>
+</div>
+<% } %>
+</body>
+</html>

@@ -12,6 +12,19 @@ const urlDatabase = {
   "9sm5xK": "http://www.google.com"
 };
 
+const users = { 
+  "userRandomID": {
+    id: "userRandomID", 
+    email: "user@example.com", 
+    password: "purple-monkey-dinosaur"
+  },
+ "user2RandomID": {
+    id: "user2RandomID", 
+    email: "user2@example.com", 
+    password: "dishwasher-funk"
+  }
+}
+
 app.post("/logout", (req, res) => {
   console.log('logging-out');
   res.clearCookie('username');
@@ -47,7 +60,7 @@ app.post("/urls/", (req, res) => {//new
     temp = generateRandomString(6);
   }
   urlDatabase[temp] = 'http://' + req.body.longURL;
-  res.redirect('/urls')
+  res.redirect('/urls');
 });
 
 app.get('/u/:shortURL', (req, res) => {
@@ -55,7 +68,7 @@ app.get('/u/:shortURL', (req, res) => {
 })
 
 app.get("/", (req, res) => {
-  res.send("Hello!");
+  res.redirect('/urls');
 });
 
 app.get("/urls/new", (req, res) => {
@@ -74,11 +87,6 @@ app.get("/urls", (req, res) => {
 
 app.get("/urls.json", (req, res) => {
   res.json(urlDatabase);
-});
-
-app.get("/hello", (req, res) => {
-  let templateVars = { greeting: 'Hello World!' };
-  res.render("helloWorld", templateVars);
 });
 
 app.listen(PORT, () => {
