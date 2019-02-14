@@ -10,11 +10,15 @@
 </head>
 <body style="font-size:20px; padding:50px;">
   <%- include ./partials/_header.ejs %>
-  <h3> URL Directory </h3>
-<% for(var user in users) { %>
-  <li> User: <%= user.id%> Email: <%= user.email%> User: <%= user.password%>
-  </li>
+  <h3> New User :) </h3>
+  <div>
+  <form style="display:inline-block" method="POST" action='/register'></form>
+    <input type='text' name='id' placeholder="name"></input>
+    <input type='text' name='email' placeholder="email"></input>
+    <input type='password' name='password' placeholder="password"></input>
+    <button type='submit'>Submit</button>
+  </form>
   <a href=<%=`/urls/${link}`%>><button >Edit</button></a>
-<% } %>
+</div>
 </body>
 </html>
