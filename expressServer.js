@@ -8,14 +8,14 @@ const bodyParser = require("body-parser");
 app.use(bodyParser.urlencoded({extended: true}));
 
 const urlDatabase = {
-  "b2xVn2": "http://www.lighthouselabs.ca",
-  "9sm5xK": "http://www.google.com"
+  b6UTxQ: { longURL: "https://www.tsn.ca", userID: "12345" },
+  i3BoGr: { longURL: "https://www.google.ca", userID: "aaaaa" }
 };
 
 const users = { 
   "12345": {
     id: "12345", 
-    email: "user@example.com", 
+    email: "boi@gmail.com", 
     password: "lul"
   },
  "aaaaa": {
@@ -48,15 +48,25 @@ app.post("/login", (req, res) => {
 });
 
 app.post("/urls/:shortURL", (req, res) => {
-  console.log(`Changing ${urlDatabase[req.params.shortURL]} to ${req.body.newURL}`)
-  urlDatabase[req.params.shortURL] = req.body.newURL;
-  res.redirect(`/urls/${req.params.shortURL}`);
+  if (!req.cookies.userId || req.cookies.userId !== urlDatabase[req.params.shortURL].userID) {
+    res.status(401).send('<a href= "/urls">Cheeky Guy Huh</a>');
+  }
+  else {
+    console.log(`Changing ${urlDatabase[req.params.shortURL].longURL} to ${req.body.newURL}`);
+    urlDatabase[req.params.shortURL].longURL = req.body.newURL;
+    res.redirect(`/urls/${req.params.shortURL}`);
+  }
 });
 
 app.post("/urls/:shortURL/delete", (req, res) => {
-  console.log(`${req.params.shortURL}/${urlDatabase[req.params.shortURL]} is being deleted`);
-  delete urlDatabase[req.params.shortURL];
-  res.redirect('/urls/');
+  if (!req.cookies.userId || req.cookies.userId !== urlDatabase[req.params.shortURL].userID) {
+    res.status(401).send('<a href= "/urls">Cheeky Guy Huh</a>');
+  }
+  else {
+    console.log(`${req.params.shortURL}/${urlDatabase[req.params.shortURL]} is being deleted`);
+    delete urlDatabase[req.params.shortURL];
+    res.redirect('/urls/');
+  }
 }); 
 
 app.post('/register', (req, res) => {
@@ -91,7 +101,7 @@ app.post("/urls/", (req, res) => {//new
   while (urlDatabase[temp]) {
     temp = generateRandomString(6);
   }
-  urlDatabase[temp] = 'http://' + req.body.longURL;
+  urlDatabase[temp].longURL = 'http://' + req.body.longURL;
   res.redirect('/urls');
 });
 
@@ -117,16 +127,19 @@ app.get("/urls", (req, res) => {
 });
 
 app.get("/urls/new", (req, res) => {
-  res.render("urlsNew",{user: users[req.cookies['userId']]});
+  if (!req.cookies.userId)
+    res.status(401).send('<p>No Guest Access</p><a href="/urls">Main Page</a><br><a href="/register">Create an account</a><br><a href="/login">Login</a>');
+  else
+    res.render("urlsNew",{user: users[req.cookies['userId']]});
 });
 
 app.get("/urls/:shortURL", (req, res) => {
-  let templateVars = { shortURL: req.params.shortURL, longURL: urlDatabase[req.params.shortURL], user: users[req.cookies['userId']] };
+  let templateVars = { shortURL: req.params.shortURL, longUrl: urlDatabase[req.params.shortURL].longURL, user: users[req.cookies['userId']] };
     res.render("urlsShow", templateVars);
 });
 
 app.get('/u/:shortURL', (req, res) => {
-  res.redirect(urlDatabase[req.params.shortURL])
+  res.redirect(urlDatabase[req.params.shortURL].longURL)
 })
 
 app.get("/", (req, res) => {
@@ -167,4 +180,16 @@ function emailLookup(target) { //returns user id if found
   }
   console.log(target,'not found');
   return false;
+}
+
+function urlsForUser(thisUserId) {
+  var urlList = [];
+  for (var key in urlDatabase) {
+    let urlId = urlDatabase[key];
+    if (thisUserId === urlId.userID) {
+      urlList.push(key);
+    }
+  }
+  console.log(`Fetching ${urlList} for user ${users[thisUserId].email}`);
+  return urlList;
 }

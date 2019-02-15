@@ -12,7 +12,7 @@
   <%- include ./partials/_header.ejs %>
   <h3> URL Directory </h3>
 <% for(var link in urls) { %>
-  <li> Short: <a href= <%=`/urls/${link}`%>> <%= link %> </a> Long: <a href= <%=urls[link]%>> <%= urls[link] %> </a></li>
+  <li> Short: <a href= <%=`/urls/${link}`%>> <%= link %> </a> Long: <a href= <%=urls[link].longURL%>> <%= urls[link].longURL %> </a></li>
   <div>
   <form style="display:inline-block" method="POST" action= <%=`/urls/${link}/delete`%>>
     <button type='submit'>Delete</button>
