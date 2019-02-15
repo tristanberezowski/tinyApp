@@ -1,10 +1,11 @@
 const express = require("express");
-const cookieParser = require('cookie-parser')
+const cookieParser = require('cookie-parser');
+const bcrypt = require('bcrypt');
+const bodyParser = require("body-parser");
 const app = express();
 const PORT = 8080;
 app.set("view engine", "ejs");
-app.use(cookieParser())
-const bodyParser = require("body-parser");
+app.use(cookieParser());
 app.use(bodyParser.urlencoded({extended: true}));
 
 const urlDatabase = {
@@ -16,12 +17,12 @@ const users = {
   "12345": {
     id: "12345", 
     email: "boi@gmail.com", 
-    password: "lul"
+    password: bcrypt.hashSync('lul', 10)
   },
  "aaaaa": {
     id: "aaaaa", 
     email: "tristan@gmail.com", 
-    password: "123"
+    password: bcrypt.hashSync('lul', 10)
   }
 }
 
@@ -37,7 +38,7 @@ app.post("/login", (req, res) => {
   if (!users[thisUser]) {
     res.status(400).send('<p>Email not in Use</p><a href="/login">Go back</a><br><a href="/register">Register</a>');
   }
-  else if (req.body.password !== users[thisUser].password) {
+  else if (!bcrypt.compareSync(req.body.password, users[thisUser].password)) {
     res.status(400).send('<p>Incorrect password</p><a href="/login">Go Back</a>');
   }
   else {
@@ -83,7 +84,7 @@ app.post('/register', (req, res) => {
     users[newId] = { 
       id: newId,
       email: req.body.email,
-      password: req.body.password
+      password: bcrypt.hashSync(req.body.password, 10)
     }
     console.log(`New User: ${users[newId].email}`);
     res.cookie('userId',newId);
