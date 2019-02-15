@@ -32,15 +32,16 @@ app.post("/logout", (req, res) => {
 });
 
 app.post("/login", (req, res) => {
+  console.log('email inputted:',req.body.email);
   var thisUser = emailLookup(req.body.email);
-  if (thisUser) {
-    res.status(400).send('<p>Email not in Use</p><a href="/login">Go back</a><a href="/register">Register</a>');
+  if (!users[thisUser]) {
+    res.status(400).send('<p>Email not in Use</p><a href="/login">Go back</a><br><a href="/register">Register</a>');
   }
   else if (req.body.password !== users[thisUser].password) {
     res.status(400).send('<p>Incorrect password</p><a href="/login">Go Back</a>');
   }
   else {
-    res.cookie(users[thisUser].id, userId);
+    res.cookie('userId', users[thisUser].id);
     console.log(`Logging in User: ${users[thisUser].email}`);
     res.redirect(`/urls`);
   }
@@ -159,9 +160,11 @@ function generateRandomString(len) {
 }
 
 function emailLookup(target) { //returns user id if found
-  for (let user in users) {
+  for (var key in users) {
+    let user = users[key];
     if(user.email === target)
-      return user;
+      return user.id;
   }
+  console.log(target,'not found');
   return false;
 }
