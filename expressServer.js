@@ -112,14 +112,19 @@ app.get('/user/:user', (req, res) => {
   res.render('showUser', templateVars);
 });
 
+/*app.get('/users', (req, res) => {
+  let templateVars = {users: users, user: users[req.cookies['userId']]};
+  res.render('userPage',templateVars);
+})*/
+
 app.get('/login', (req, res) => {
   let templateVars = {user: users[req.cookies['userId']]};
-  res.render('login',templateVars)
+  res.render('login',templateVars);
 });
 
 app.get('/register', (req, res) => {
   let templateVars = {user: users[req.cookies['userId']]};
-  res.render('register',templateVars)
+  res.render('register',templateVars);
 });
 
 app.get("/urls", (req, res) => {
