@@ -1,11 +1,14 @@
 const express = require("express");
-const cookieParser = require('cookie-parser');
+const cookieSession = require('cookie-session')
 const bcrypt = require('bcrypt');
 const bodyParser = require("body-parser");
 const app = express();
 const PORT = 8080;
 app.set("view engine", "ejs");
-app.use(cookieParser());
+app.use(cookieSession({
+  name: 'session',
+  keys: ['Super Secret Key']
+}));
 app.use(bodyParser.urlencoded({extended: true}));
 
 const urlDatabase = {
@@ -28,7 +31,7 @@ const users = {
 
 app.post("/logout", (req, res) => {
   console.log('logging-out');
-  res.clearCookie('userId');
+  req.session = null;
   res.redirect('/urls');
 });
 
@@ -42,14 +45,14 @@ app.post("/login", (req, res) => {
     res.status(400).send('<p>Incorrect password</p><a href="/login">Go Back</a>');
   }
   else {
-    res.cookie('userId', users[thisUser].id);
+    req.session.userId = users[thisUser].id;
     console.log(`Logging in User: ${users[thisUser].email}`);
     res.redirect(`/urls`);
   }
 });
 
 app.post("/urls/:shortURL", (req, res) => {
-  if (!req.cookies.userId || req.cookies.userId !== urlDatabase[req.params.shortURL].userID) {
+  if (!req.session.userId || req.session.userId !== urlDatabase[req.params.shortURL].userID) {
     res.status(401).send('<a href= "/urls">Cheeky Guy Huh</a>');
   }
   else {
@@ -60,7 +63,7 @@ app.post("/urls/:shortURL", (req, res) => {
 });
 
 app.post("/urls/:shortURL/delete", (req, res) => {
-  if (!req.cookies.userId || req.cookies.userId !== urlDatabase[req.params.shortURL].userID) {
+  if (!req.session.userId || req.session.userId !== urlDatabase[req.params.shortURL].userID) {
     res.status(401).send('<a href= "/urls">Cheeky Guy Huh</a>');
   }
   else {
@@ -87,7 +90,7 @@ app.post('/register', (req, res) => {
       password: bcrypt.hashSync(req.body.password, 10)
     }
     console.log(`New User: ${users[newId].email}`);
-    res.cookie('userId',newId);
+    req.session.userId = newId;
     res.redirect(`/user/${newId}`);
   }
 });
@@ -108,7 +111,7 @@ app.post("/urls/", (req, res) => {//new
 
 app.get('/user/:user', (req, res) => {
   let currentId = req.params.user;
-  let templateVars = {user: users[req.cookies['userId']], profile: users[currentId]};
+  let templateVars = {user: users[req.session.userId], profile: users[currentId]};
   res.render('showUser', templateVars);
 });
 
@@ -118,29 +121,29 @@ app.get('/user/:user', (req, res) => {
 })*/
 
 app.get('/login', (req, res) => {
-  let templateVars = {user: users[req.cookies['userId']]};
+  let templateVars = {user: users[req.session.userId]};
   res.render('login',templateVars);
 });
 
 app.get('/register', (req, res) => {
-  let templateVars = {user: users[req.cookies['userId']]};
+  let templateVars = {user: users[req.session.userId] };
   res.render('register',templateVars);
 });
 
 app.get("/urls", (req, res) => {
-  let templateVars = { urls: urlDatabase, user: users[req.cookies['userId']]};
+  let templateVars = { urls: urlDatabase, user: users[req.session.userId] };
   res.render("urlsIndex", templateVars);
 });
 
 app.get("/urls/new", (req, res) => {
-  if (!req.cookies.userId)
+  if (!req.session.userId)
     res.status(401).send('<p>No Guest Access</p><a href="/urls">Main Page</a><br><a href="/register">Create an account</a><br><a href="/login">Login</a>');
   else
-    res.render("urlsNew",{user: users[req.cookies['userId']]});
+    res.render("urlsNew",{user: users[req.session.userId]});
 });
 
 app.get("/urls/:shortURL", (req, res) => {
-  let templateVars = { shortURL: req.params.shortURL, longUrl: urlDatabase[req.params.shortURL].longURL, user: users[req.cookies['userId']] };
+  let templateVars = { shortURL: req.params.shortURL, longUrl: urlDatabase[req.params.shortURL].longURL, user: users[req.session.userId] };
     res.render("urlsShow", templateVars);
 });
 
