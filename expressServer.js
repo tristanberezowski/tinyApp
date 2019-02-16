@@ -1,3 +1,6 @@
+/* TinyApp Server by Tristan Berezowski
+Start server with npm start
+*/
 const express = require("express");
 const cookieSession = require('cookie-session');
 const bcrypt = require('bcrypt');
@@ -27,7 +30,7 @@ const users = {
     email: "tristan@gmail.com", 
     password: bcrypt.hashSync('lul', 10)
   }
-}
+};
 
 app.post("/user/:oldId", (req, res) => {
   if (!req.session.userId || (req.session.userId !== users[req.params.oldId].id)) {
@@ -113,7 +116,7 @@ app.post('/register', (req, res) => {
       id: newId,
       email: req.body.email,
       password: bcrypt.hashSync(req.body.password, 10)
-    }
+    };
     console.log(`New User: ${users[newId].email}`);
     req.session.userId = newId;
     res.redirect(`/user/${newId}`);
@@ -158,7 +161,7 @@ app.get("/urls", (req, res) => {
 });
 
 app.get("/urls/new", (req, res) => {
-  if (!req.session.userId)
+  if (!req.session.userId || !userIdLookup(req.session.userId))
     res.status(401).send('<p>No Guest Access</p><a href="/urls">Main Page</a><br><a href="/register">Create an account</a><br><a href="/login">Login</a>');
   else
     res.render("urlsNew",{user: users[req.session.userId]});
@@ -170,7 +173,7 @@ app.get("/urls/:shortURL", (req, res) => {
 });
 
 app.get('/u/:shortURL', (req, res) => {
-  res.redirect(urlDatabase[req.params.shortURL].longURL)
+  res.redirect(urlDatabase[req.params.shortURL].longURL);
 })
 
 app.get("/", (req, res) => {
@@ -213,7 +216,17 @@ function emailLookup(target) { //returns user id if found
   return false;
 }
 
-function urlsForUser(thisUserId) {
+function userIdLookup(target) {
+  for (var key in users) {
+    let user = users[key];
+    if(user.id === target)
+      return true;
+  }
+  console.log(target,'not found');
+  return false;
+}
+
+function urlsForUser(thisUserId) { //returns an array of urls from the user by their shortURL
   var urlList = [];
   for (var key in urlDatabase) {
     let urlId = urlDatabase[key];
