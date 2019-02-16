@@ -1,4 +1,5 @@
 # TinyApp URL Shortener Project
+#### By Tristan Berezowski
 
 ### Features:
 
