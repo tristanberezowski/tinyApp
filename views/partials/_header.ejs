@@ -3,7 +3,7 @@
 <a href='/urls/new' style='font-size:15px;padding:5px'>Create New TinyURL</a>
 <% if(user){ %>
     <form action='/logout' method='POST'>
-      <p style= 'display: inline-block'><%= user.email %></p>
+      <a href='<%=`/user/${user.id}`%>' style= 'display: inline-block'><%= user.email %></a>
       <button type='submit'>Logout</button>
     </form>
   <% } else { %>

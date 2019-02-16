@@ -1,5 +1,5 @@
 const express = require("express");
-const cookieSession = require('cookie-session')
+const cookieSession = require('cookie-session');
 const bcrypt = require('bcrypt');
 const bodyParser = require("body-parser");
 const app = express();
@@ -29,9 +29,34 @@ const users = {
   }
 }
 
+app.post("/user/:oldId", (req, res) => {
+  if (!req.session.userId || (req.session.userId !== users[req.params.oldId].id)) {
+    res.status(401).send('<a href= "/urls">Wrong Profile</a>');
+  }
+  else if(!checkUnique(req.body.id, users)) {
+    res.status(409).send('<p>Id in use</p><br><a href= "/urls">Go Back</a>')
+  }
+  else {
+    console.log(`Changing ${users[req.params.oldId].id} to ${req.body.id}`);
+    const newId = req.body.id;
+    users[newId] = users[req.params.oldId];
+    delete users[req.params.oldId];
+    users[newId].id = newId;
+    console.log(users);
+    const urlList = urlsForUser(req.params.oldId);
+    for(let i = 0; i < urlList.length; i++) {
+      urlDatabase[urlList[i]].userID = newId;
+    }
+    req.session.userId = newId;
+    console.log(`Cookie is set to ${newId}`);
+    res.redirect('/urls');
+  }
+});
+
 app.post("/logout", (req, res) => {
   console.log('logging-out');
   req.session = null;
+  console.log(`${req.session}`);
   res.redirect('/urls');
 });
 
@@ -53,7 +78,7 @@ app.post("/login", (req, res) => {
 
 app.post("/urls/:shortURL", (req, res) => {
   if (!req.session.userId || req.session.userId !== urlDatabase[req.params.shortURL].userID) {
-    res.status(401).send('<a href= "/urls">Cheeky Guy Huh</a>');
+    res.status(401).send('<a href= "/urls">You are not the right user</a>');
   }
   else {
     console.log(`Changing ${urlDatabase[req.params.shortURL].longURL} to ${req.body.newURL}`);
@@ -105,20 +130,17 @@ app.post("/urls/", (req, res) => {//new
   while (urlDatabase[temp]) {
     temp = generateRandomString(6);
   }
-  urlDatabase[temp].longURL = 'http://' + req.body.longURL;
+  urlDatabase[temp] = { longURL: 'http://' + req.body.longURL, userID: req.session.userId };
+  console.log(urlDatabase);
   res.redirect('/urls');
 });
 
 app.get('/user/:user', (req, res) => {
   let currentId = req.params.user;
-  let templateVars = {user: users[req.session.userId], profile: users[currentId]};
+  let urlList = urlsForUser(currentId);
+  let templateVars = {user: users[req.session.userId], profile: users[currentId], urlList: urlList, urls: urlDatabase};
   res.render('showUser', templateVars);
 });
-
-/*app.get('/users', (req, res) => {
-  let templateVars = {users: users, user: users[req.cookies['userId']]};
-  res.render('userPage',templateVars);
-})*/
 
 app.get('/login', (req, res) => {
   let templateVars = {user: users[req.session.userId]};
@@ -143,8 +165,8 @@ app.get("/urls/new", (req, res) => {
 });
 
 app.get("/urls/:shortURL", (req, res) => {
-  let templateVars = { shortURL: req.params.shortURL, longUrl: urlDatabase[req.params.shortURL].longURL, user: users[req.session.userId] };
-    res.render("urlsShow", templateVars);
+  let templateVars = { shortURL: req.params.shortURL, urls: urlDatabase, user: users[req.session.userId] };
+  res.render("urlsShow", templateVars);
 });
 
 app.get('/u/:shortURL', (req, res) => {
@@ -199,6 +221,6 @@ function urlsForUser(thisUserId) {
       urlList.push(key);
     }
   }
-  console.log(`Fetching ${urlList} for user ${users[thisUserId].email}`);
+  //console.log(`Fetching ${urlList} for user ${users[thisUserId].email}`);
   return urlList;
 }

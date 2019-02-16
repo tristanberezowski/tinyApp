@@ -9,13 +9,15 @@
   <title>TinyApp</title>
 </head>
 <body style="font-size:20px; padding:50px;">
-  <%- include ./partials/_header.ejs %>
-  <h3> Your URL Is </h3>
+  <% include ./partials/_header.ejs %>
+  <h3> This URL from <%=urls[shortURL].userID%> is </h3>
   <h6> Short: <%=`/u/${shortURL}`%><br></h6>
-  <form action=<%=`/urls/${shortURL}`%> method='POST'>
-    <p>Change your URL</p>
-    <input type="text" name='newURL' placeholder=<%=longUrl%> ></input>
-    <button type='submit'>Submit</button>
-  </form>
+  <% if(user && urls[shortURL].userID === user.id) { %>
+    <form action='<%=`/urls/${shortURL}`%>'' method='POST'>
+      <p>Change this URL</p>
+      <input type="text" name='newURL' placeholder=<%=urls[shortURL].longURL%> ></input>
+      <button type='submit'>Submit</button>
+    </form>
+  <% } %>
 </body>
 </html>

@@ -10,10 +10,21 @@
 </head>
 <body style="font-size:20px; padding:50px;">
   <% include ./partials/_header.ejs %>
-  <h3> User Profile For <%= user.email %> </h3>
+  <h3> User Profile For <%= profile.email %> </h3>
   <h5>Details:</h5>
   <% for(var details in profile) { if(details !== 'password') { %>
-  <h6> <%= `${details}: ${profile[details]}` %></h6>
+    <h6> <%= `${details}: ${profile[details]}` %></h6>
   <% }} %>
+  <h5>URLs:</h5>
+  <% for (let i = 0; i < urlList.length; i++) { %>
+    <h6> <%= `/${urlList[i]}:`%><a href=<%=urls[urlList[i]].longURL %>> <%=urls[urlList[i]].longURL%> </a> </h6>
+  <% } %>
+  <%if(user && user.id === profile.id) {%>
+  <form action='<%=`/user/${user.id}`%>'' method='POST'>
+    <p>Change your Id?</p>
+    <input type='text' name='id'></input>
+    <button type='submit'>Submit</button>
+  </form>
+  <%}%>
 </body>
 </html>
