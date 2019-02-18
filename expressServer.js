@@ -14,6 +14,7 @@ app.use(cookieSession({
 }));
 app.use(bodyParser.urlencoded({extended: true}));
 
+//Databases
 const urlDatabase = {
   b6UTxQ: { longURL: "https://www.tsn.ca", userID: "12345" },
   i3BoGr: { longURL: "https://www.google.ca", userID: "aaaaa" }
@@ -32,6 +33,7 @@ const users = {
   }
 };
 
+//update user-id - a stretch feature not required
 app.post("/user/:oldId", (req, res) => {
   if (!req.session.userId || (req.session.userId !== users[req.params.oldId].id)) {
     res.status(401).send('<a href= "/urls">Wrong Profile</a>');
@@ -40,32 +42,28 @@ app.post("/user/:oldId", (req, res) => {
     res.status(409).send('<p>Id in use</p><br><a href= "/urls">Go Back</a>')
   }
   else {
-    console.log(`Changing ${users[req.params.oldId].id} to ${req.body.id}`);
+    //console.log(`Changing ${users[req.params.oldId].id} to ${req.body.id}`);
     const newId = req.body.id;
     users[newId] = users[req.params.oldId];
     delete users[req.params.oldId];
     users[newId].id = newId;
-    console.log(users);
     const urlList = urlsForUser(req.params.oldId);
     for(let i = 0; i < urlList.length; i++) {
       urlDatabase[urlList[i]].userID = newId;
     }
     req.session.userId = newId;
-    console.log(`Cookie is set to ${newId}`);
+    //console.log(`Cookie is set to ${newId}`);
     res.redirect('/urls');
   }
 });
 
 app.post("/logout", (req, res) => {
-  console.log('logging-out');
   req.session = null;
-  console.log(`${req.session}`);
   res.redirect('/urls');
 });
 
 app.post("/login", (req, res) => {
-  console.log('email inputted:',req.body.email);
-  var thisUser = emailLookup(req.body.email);
+  const thisUser = emailLookup(req.body.email);
   if (!users[thisUser]) {
     res.status(400).send('<p>Email not in Use</p><a href="/login">Go back</a><br><a href="/register">Register</a>');
   }
@@ -74,19 +72,20 @@ app.post("/login", (req, res) => {
   }
   else {
     req.session.userId = users[thisUser].id;
-    console.log(`Logging in User: ${users[thisUser].email}`);
+    //console.log(`Logging in User: ${users[thisUser].email}`);
     res.redirect(`/urls`);
   }
 });
 
+// editing a url
 app.post("/urls/:shortURL", (req, res) => {
   if (!req.session.userId || req.session.userId !== urlDatabase[req.params.shortURL].userID) {
     res.status(401).send('<a href= "/urls">You are not the right user</a>');
   }
   else {
-    console.log(`Changing ${urlDatabase[req.params.shortURL].longURL} to ${req.body.newURL}`);
+    //console.log(`Changing ${urlDatabase[req.params.shortURL].longURL} to ${req.body.newURL}`);
     urlDatabase[req.params.shortURL].longURL = req.body.newURL;
-    res.redirect(`/urls/${req.params.shortURL}`);
+    res.redirect(`/urls/`);
   }
 });
 
@@ -95,7 +94,7 @@ app.post("/urls/:shortURL/delete", (req, res) => {
     res.status(401).send('<a href= "/urls">Cheeky Guy Huh</a>');
   }
   else {
-    console.log(`${req.params.shortURL}/${urlDatabase[req.params.shortURL]} is being deleted`);
+    //console.log(`${req.params.shortURL}/${urlDatabase[req.params.shortURL]} is being deleted`);
     delete urlDatabase[req.params.shortURL];
     res.redirect('/urls/');
   }
@@ -117,14 +116,13 @@ app.post('/register', (req, res) => {
       email: req.body.email,
       password: bcrypt.hashSync(req.body.password, 10)
     };
-    console.log(`New User: ${users[newId].email}`);
+    //console.log(`New User: ${users[newId].email}`);
     req.session.userId = newId;
     res.redirect(`/user/${newId}`);
   }
 });
 
 app.post("/urls/", (req, res) => {//new
-  console.log(req.body);
   if (!req.body.longURL) {
     res.redirect('/urls/');
     return 0;
@@ -134,10 +132,10 @@ app.post("/urls/", (req, res) => {//new
     temp = generateRandomString(6);
   }
   urlDatabase[temp] = { longURL: 'http://' + req.body.longURL, userID: req.session.userId };
-  console.log(urlDatabase);
   res.redirect('/urls');
 });
 
+//user profile
 app.get('/user/:user', (req, res) => {
   let currentId = req.params.user;
   let urlList = urlsForUser(currentId);
@@ -185,7 +183,7 @@ app.get("/urls.json", (req, res) => {
 });
 
 app.listen(PORT, () => {
-  console.log(`Example app listening on port ${PORT}!`);
+  console.log(`tinyApp listening on port ${PORT}!`);
 });
 
 function checkUnique(newId, database) {
@@ -193,7 +191,7 @@ function checkUnique(newId, database) {
     if (database[key].id === newId)
       return false;
   }
-  console.log(`${newId} is unique`);
+  //console.log(`${newId} is unique`);
   return true;
 }
 
@@ -212,7 +210,7 @@ function emailLookup(target) { //returns user id if found
     if(user.email === target)
       return user.id;
   }
-  console.log(target,'not found');
+  //console.log(target,'not found');
   return false;
 }
 
@@ -222,7 +220,7 @@ function userIdLookup(target) {
     if(user.id === target)
       return true;
   }
-  console.log(target,'not found');
+  //console.log(target,'not found');
   return false;
 }
 
@@ -234,6 +232,5 @@ function urlsForUser(thisUserId) { //returns an array of urls from the user by t
       urlList.push(key);
     }
   }
-  //console.log(`Fetching ${urlList} for user ${users[thisUserId].email}`);
   return urlList;
 }

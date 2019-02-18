@@ -13,3 +13,9 @@
 !["Urls main page"](https://github.com/tristanberezowski/tinyApp/blob/master/urls.png)
 !["User profile page"](https://github.com/tristanberezowski/tinyApp/blob/master/profile.png)
 !["Single url page"](https://github.com/tristanberezowski/tinyApp/blob/master/url.png)
+
+### Usage:
+
+* must npm install node expressServer.js
+* use npm start in your terminal to start the server
+* visit http://localhost:8080/ to see the main page
