@@ -33,7 +33,7 @@ const users = {
   }
 };
 
-//update user-id - a stretch feature not required
+//update user-id - a stretch feature not required in the project criteria
 app.post("/user/:oldId", (req, res) => {
   if (!req.session.userId || (req.session.userId !== users[req.params.oldId].id)) {
     res.status(401).send('<a href= "/urls">Wrong Profile</a>');
