@@ -8,6 +8,14 @@
 * Login and registration is quick and easy
 * Each user can set their username/id to whatever they want given it is unique
 
+### Tech Stack:
+
+- JavaScript
+- EJS
+- CSS
+- Express.js
+- Cookie Session
+
 ### Screenshots:
 
 !["Urls main page"](https://github.com/tristanberezowski/tinyApp/blob/master/screenshots/urls.png)
