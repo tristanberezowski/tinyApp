@@ -10,9 +10,9 @@
 
 ### Screenshots:
 
-!["Urls main page"](https://github.com/tristanberezowski/tinyApp/blob/master/urls.png)
-!["User profile page"](https://github.com/tristanberezowski/tinyApp/blob/master/profile.png)
-!["Single url page"](https://github.com/tristanberezowski/tinyApp/blob/master/url.png)
+!["Urls main page"](https://github.com/tristanberezowski/tinyApp/blob/master/screenshots/urls.png)
+!["User profile page"](https://github.com/tristanberezowski/tinyApp/blob/master/screenshots/profile.png)
+!["Single url page"](https://github.com/tristanberezowski/tinyApp/blob/master/screenshots/url.png)
 
 ### Usage:
 
